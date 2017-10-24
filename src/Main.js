@@ -12,10 +12,8 @@ Main.prototype.joinRoom = function (obj, client) {
 		console.log(client.id + ' has been joined in ' + obj.name)
 		return
 	}
-	let newRoom = this.io.of(obj.name)
 	console.log('room ' + obj.name + ' has been created.')
 	this.rooms[obj.name] = {
-		channel: newRoom,
 		persons: {}
 	}
 	this.joinRoom(obj, client)
