@@ -18,20 +18,18 @@ app.use(webpackDevMiddleware(compiler, {
 	publicPath: publicPath,
 	stats: {
 		colors: true
-    },
-    index: "index-dev.html"
+    }
 }))
 app.use(webpackHotMiddleware(compiler, {
 	noInfo: true,
 	publicPath: publicPath,
 	stats: {
 		colors: true
-    },
-    index: "index-dev.html"
+    }
 }))
 
 app.get('/', function (request, response) {
-    response.sendFile('index-dev.html', {
+    response.sendFile('main-dev.html', {
         root: publicPath
     })
 });

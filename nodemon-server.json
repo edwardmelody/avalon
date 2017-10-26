@@ -1,6 +1,8 @@
 {
     "verbose": true,
     "ignore": [
-        "client-dev.js"
+		"client-dev.js",
+		"build/*",
+		"dist/*"
     ]
 }
