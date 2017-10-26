@@ -10,7 +10,6 @@ let Main = require('./dist/Main').default
 let main = new Main(io)
 
 io.on('connection', function (socket) {
-	console.log('a user connected')
 	socket.on('joinRoom', function (obj) {
 		main.joinRoom(obj.personName, obj.roomName, this)
 	})

@@ -3,6 +3,7 @@
     "ignore": [
 		"client-dev.js",
 		"build/*",
+		"client/*",
 		"dist/*"
     ]
 }

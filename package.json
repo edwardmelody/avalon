@@ -36,9 +36,9 @@
         "test": "yarn run start-client",
         "start-server": "nodemon --config nodemon-server.json server.js",
         "start-client": "node client-dev.js",
-        "start-sass": "node-sass -w ./client/sass/ -o ./build/css/",
+        "start-sass": "node-sass -w ./client/sass/main.sass -o ./build/css/",
         "build": "yarn run build-sass && yarn run build-frontend && yarn run build-backend",
-        "build-sass": "node-sass ./client/sass/ -o ./build/css/",
+        "build-sass": "node-sass ./client/sass/main.sass -o ./build/css/",
         "build-frontend": "webpack -p",
         "build-backend": "tsc"
     }

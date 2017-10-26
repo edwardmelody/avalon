@@ -1,41 +1,77 @@
 import Person from './Person'
 
 class Room {
-    private _name: string
-    private _personByName: { [key: string]: Person }
-    private _personById: { [key: string]: Person }
+	private static MAX_MESSAGE_LENGTH = 1000
 
-    constructor(name: string) {
-        this._name = name
-        this._personByName = {}
-        this._personById = {}
-    }
+	private client: any
+	private _name: string
+	private _personByName: { [key: string]: Person }
+	private _personById: { [key: string]: Person }
+	private _broadcastRoom: number
+	private _messages: Array<{ person: Person, message: string }>
 
-    get name(): string {
-        return this._name
-    }
 
-    addPerson(person: Person): void {
-        this._personById[person.id] = person
-        this._personByName[person.name] = person
-    }
+	constructor(name: string, broadcastRoom: number) {
+		this._name = name
+		this._broadcastRoom = broadcastRoom
+		this._personByName = {}
+		this._personById = {}
+		this._messages = []
+	}
 
-    removePerson(person: Person): void {
-        delete this._personById[person.id]
-        delete this._personByName[person.name]
-    }
+	private addMessage(client: any): void {
+		client.on('message', function (obj: any) {
+			if (!obj || !obj.name || !obj.message) {
+				return
+			}
+			this._messages.push({
+				person: this.getPersonByName(obj.name),
+				message: obj.message
+			})
+			if (this._messages.length > this.MAX_MESSAGE_LENGTH) {
+				this._messages.pop()
+			}
+		}.bind(this))
+	}
 
-    getPersonByName(name: string): Person {
-        return this._personByName[name]
-    }
+	get name(): string {
+		return this._name
+	}
 
-    getPersonBySocketId(id: string): Person {
-        return this._personById[id]
-    }
+	get messages(): Array<{ person: Person, message: string }> {
+		return this._messages
+	}
 
-    getLengthOfPersons(): number {
-        return Object.keys(this._personById).length
-    }
+	get broadcastRoom(): number {
+		return this._broadcastRoom
+	}
+
+	addPerson(client: any, person: Person): void {
+		this._personById[person.id] = person
+		this._personByName[person.name] = person
+		this.addMessage(client)
+	}
+
+	removePerson(person: Person): void {
+		delete this._personById[person.id]
+		delete this._personByName[person.name]
+	}
+
+	getPersonByName(name: string): Person {
+		return this._personByName[name]
+	}
+
+	getPersonBySocketId(id: string): Person {
+		return this._personById[id]
+	}
+
+	getPeople(): Array<string> {
+		return Object.keys(this._personByName)
+	}
+
+	getLengthOfPersons(): number {
+		return Object.keys(this._personById).length
+	}
 }
 
 export default Room

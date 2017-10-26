@@ -8,6 +8,16 @@ class Main {
         this.rooms = {};
         this.personsByName = {};
         this.personsById = {};
+        this.initialBoardcast();
+    }
+    initialBoardcast() {
+        setInterval(function () {
+            let result = {};
+            Object.keys(this.rooms).map(function (key) {
+                result[key] = this.rooms[key].getLengthOfPersons();
+            }.bind(this));
+            this.io.emit('channelReply', result);
+        }.bind(this), 1000);
     }
     joinRoom(personName, roomName, client) {
         let room = this.rooms[roomName];
@@ -15,12 +25,23 @@ class Main {
             client.join(roomName);
             this.personsByName[personName] = roomName;
             this.personsById[client.id] = roomName;
-            room.addPerson(new Person_1.default(client.id, personName));
+            room.addPerson(client, new Person_1.default(client.id, personName));
             console.log(personName + '[' + client.id + '] has been joined in ' + roomName + '. current people in the room are ' + room.getLengthOfPersons());
+            client.emit('home-reply', {
+                key: 'joinRoom',
+                result: true,
+                data: roomName
+            });
             return;
         }
         console.log('room ' + roomName + ' has been created.');
-        this.rooms[roomName] = new Room_1.default(roomName);
+        let broadcastRoom = setInterval(function () {
+            this.io.to(roomName).emit('roomReply', {
+                people: this.rooms[roomName].getPeople(),
+                messages: this.rooms[roomName].messages
+            });
+        }.bind(this), 500);
+        this.rooms[roomName] = new Room_1.default(roomName, broadcastRoom);
         this.joinRoom(personName, roomName, client);
     }
     leaveRoom(client) {
@@ -35,9 +56,15 @@ class Main {
         delete this.personsById[client.id];
         console.log(person.name + '[' + client.id + '] leaving out from ' + roomName);
         if (room.getLengthOfPersons() <= 0) {
+            clearInterval(room.broadcastRoom);
             delete this.rooms[roomName];
             console.log('room ' + roomName + ' has been deleted.');
         }
+        client.emit('home-reply', {
+            key: 'leaveRoom',
+            result: true,
+            data: roomName
+        });
     }
 }
 exports.default = Main;

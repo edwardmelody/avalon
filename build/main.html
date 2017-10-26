@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Avalon</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Courgette" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link rel="stylesheet" href="css/main.css">
     <script>
         if (typeof module === 'object') {
             window.module = module;
@@ -13,24 +16,20 @@
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
     <script>
         if (window.module) module = window.module;
-    </script>
+	</script>
+	
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
 <body>
     <div id="app">
     </div>
 </body>
-<script src="./bundle.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    var socket = io('http://localhost:9090');
-    socket.emit('joinRoom', {
-        roomName: 'room12',
-        personName: 'Edward'
-    })
-</script>
+<script src="/bundle.js"></script>
 
 </html>

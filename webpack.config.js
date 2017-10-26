@@ -13,8 +13,8 @@ const config = {
         path: path.resolve(__dirname, 'build'),
         filename: '[name].js'
     },
-
     module: {
+		noParse: [/ws/],
         rules: [
             {
                 test: /\.jsx?$/,
@@ -40,7 +40,10 @@ const config = {
                 exclude: /node_modules/
             }
         ]
-    },
+	},
+	externals: [
+		'ws'
+	],
     target: 'node',
     resolve: {
         alias: {
@@ -49,10 +52,6 @@ const config = {
             'react-dom': path.join(__dirname, 'node_modules', 'react-dom'),
             'react-router-dom': path.join(__dirname, 'node_modules', 'react-router-dom')
         }
-    },
-    devServer: {
-        contentBase: './build',
-        hot: true
     },
     plugins: [
         new webpack.optimize.OccurrenceOrderPlugin(),

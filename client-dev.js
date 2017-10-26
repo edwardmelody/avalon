@@ -9,30 +9,26 @@ var webpack = require('webpack');
 var config = require('./webpack.config-dev');
 var compiler = webpack(config);
 
-let publicPath = path.join(__dirname, 'build')
-
-app.use(express.static(publicPath))
-
 app.use(webpackDevMiddleware(compiler, {
 	noInfo: true,
-	publicPath: publicPath,
+	publicPath: config.output.publicPath,
 	stats: {
 		colors: true
-    }
+	}
 }))
 app.use(webpackHotMiddleware(compiler, {
-	noInfo: true,
-	publicPath: publicPath,
 	stats: {
 		colors: true
     }
 }))
 
+let publicPath = path.join(__dirname, 'build')
+app.use(express.static(publicPath))
 app.get('/', function (request, response) {
     response.sendFile('main-dev.html', {
         root: publicPath
     })
-});
+})
 
 app.listen(PORT, function (error) {
     if (error) {
