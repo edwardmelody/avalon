@@ -24,7 +24,7 @@ class App extends Component {
 			<div>
 				<nav>
 					<div className="nav-wrapper red darken-1">
-						<a href="#" className="brand-logo"><img src="./images/logo.png" /></a>
+						<a href="javascript:void(0)" className="brand-logo"><img src="./images/logo.png" /></a>
 						<a href="#" class="brand-logo center">Avalon</a>
 					</div>
 				</nav>
