@@ -1,7 +1,7 @@
 var path = require('path');
 var express = require('express');
 var app = express();
-var PORT = process.env.PORT || 9091
+var PORT = process.env.PORT || 4541
 
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
@@ -25,7 +25,7 @@ app.use(webpackHotMiddleware(compiler, {
 let publicPath = path.join(__dirname, 'build')
 app.use(express.static(publicPath))
 app.get('/', function (request, response) {
-    response.sendFile('main-dev.html', {
+    response.sendFile('index-dev.html', {
         root: publicPath
     })
 })

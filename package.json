@@ -9,7 +9,6 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "babel-preset-typescript": "^7.0.0-alpha.19",
     "css-loader": "^0.28.7",
     "express": "^4.15.3",
     "file-loader": "^1.1.5",
@@ -41,7 +40,7 @@
     "build": "yarn run build-sass && yarn run build-frontend && yarn run build-backend",
     "build-sass": "node-sass ./client/sass/main.sass ./build/css/main.css",
     "build-frontend": "webpack -p",
-	"build-backend": "tsc && yarn run copy-json",
-	"copy-json": "rd /s /q dist\\lang\\config\\ && mkdir dist\\lang\\config\\ && xcopy /s /Y server\\lang\\config\\* dist\\lang\\config\\*"
+    "build-backend": "tsc && yarn run copy-json",
+    "copy-json": "rd /s /q dist\\lang\\config\\ && mkdir dist\\lang\\config\\ && xcopy /s /Y server\\lang\\config\\* dist\\lang\\config\\*"
   }
 }

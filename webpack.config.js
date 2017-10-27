@@ -14,7 +14,6 @@ const config = {
         filename: '[name].js'
     },
     module: {
-		noParse: [/ws/],
         rules: [
             {
                 test: /\.jsx?$/,
@@ -41,9 +40,6 @@ const config = {
             }
         ]
 	},
-	externals: [
-		'ws'
-	],
     target: 'node',
     resolve: {
         alias: {

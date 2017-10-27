@@ -10,7 +10,7 @@ class Home extends Component {
 		}
 		this.name = ''
 		this.channelName = ''
-		this.socket = io('http://localhost:9090')
+		this.socket = io('http://edwardmelody.thddns.net:4540/')
 
 		this.onClickJoinChannel = this.joinChannel.bind(this);
 	}

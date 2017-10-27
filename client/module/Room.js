@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 
+import UIUtil from './../util/UIUtil'
+
 class Room extends Component {
 
 	constructor(props) {
@@ -49,6 +51,10 @@ class Room extends Component {
 			})
 		}.bind(this))
 
+		if (UIUtil.isMobile()) {
+			$('.r-textarea').css('margin-right', '1em')
+			$('#btnSendMessage').removeClass('m-nonvisible')
+		}
 		$('.r-textarea').focus()
 	}
 
@@ -82,15 +88,20 @@ class Room extends Component {
 		this.tempText = text
 		let code = e.keyCode
 		if (code === 13 && !e.shiftKey) { // enter
-			this.socket.emit('message', {
-				name: this.personName,
-				message: text
-			})
-			e.target.innerHTML = ''
+			this.sendMessage()
 			e.preventDefault()
 			return false
 		}
 		return true
+	}
+
+	sendMessage() {
+		let text = $('.r-textarea').html()
+		this.socket.emit('message', {
+			name: this.personName,
+			message: text
+		})
+		$('.r-textarea').html('')
 	}
 
 	render() {
@@ -125,7 +136,7 @@ class Room extends Component {
 									this.state.people.map(function (name) {
 										let className = 'collection-item'
 										if (name === this.personName) {
-											className += ' active'
+											className += ' red lighten-2'
 										}
 										return (
 											<li className={className}>{name}</li>
@@ -139,6 +150,7 @@ class Room extends Component {
 				<div className="r-bottom-container red darken-2">
 					<div className="r-chat-box-container">
 						<div className="r-textarea" contentEditable="true" placeholder="typing your mind" onKeyDown={(e) => this.onSubmitMessage(e)}></div>
+						<a id="btnSendMessage" onClick={this.sendMessage.bind(this)} className="waves-effect waves-light btn red lighten-2 m-nonvisible">send</a>
 					</div>
 				</div>
 			</div>
