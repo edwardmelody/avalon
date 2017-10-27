@@ -14,6 +14,10 @@ io.on('connection', function (socket) {
 		main.joinRoom(obj.personName, obj.roomName, this)
 	})
 
+	socket.on('leaveRoom', function () {
+		main.leaveRoom(this)
+	})
+
 	socket.on('disconnect', function () {
 		main.leaveRoom(this)
 	})

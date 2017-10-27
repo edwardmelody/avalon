@@ -15,21 +15,22 @@
 	width: 100vw
 	padding: 10px
 	.r-chat-box-container
-		display: flex
+		width: 100%
 		height: 100%
-		.r-chat-box
-			flex: 1
-			.r-textarea:empty:before
-				content: attr(placeholder)
-				color: #9c9c9c
-			.r-textarea
-				background-color: white
-				margin: 0
-				padding: 0.5em
-				height: 2.5em
-				overflow: hidden
-				white-space: nowrap
-				content: attr(placeholder)
+		.r-textarea:empty:before
+			content: attr(placeholder)
+			color: #9c9c9c
+		.r-textarea
+			width: 100%
+			max-width: 100%
+			background-color: white
+			margin: 0
+			padding: 0.5em
+			height: 2.5em
+			overflow: hidden
+			word-wrap: break-word
+			overflow-wrap: break-word
+			white-space: normal
 
 .r-left-container
 	flex: 1

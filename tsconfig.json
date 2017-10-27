@@ -1,17 +1,21 @@
 {
-    "compilerOptions": {
-        "target": "es6",
-        "module": "commonjs",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "outDir": "dist",
-        "sourceMap": false
-    },
-    "include": [
-        "server/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+	"compilerOptions": {
+		"target": "es6",
+		"module": "commonjs",
+		"noImplicitAny": true,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"outDir": "dist",
+		"sourceMap": false
+	},
+	"files": [
+		"./node_modules/@types/node/index.d.ts"
+	],
+	"include": [
+		"server/**/*.ts",
+		"server/**/*.json"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Room_1 = require("./model/Room");
 const Person_1 = require("./model/Person");
+const LangManager_1 = require("./lang/LangManager");
 class Main {
     constructor(io) {
         this.io = io;
@@ -22,6 +23,16 @@ class Main {
     joinRoom(personName, roomName, client) {
         let room = this.rooms[roomName];
         if (room) {
+            let person = room.getPersonByName(personName);
+            if (person) {
+                client.emit('home-reply', {
+                    key: 'joinRoom',
+                    result: false,
+                    message: LangManager_1.default.get('message', 'duplicateNameWhenJoinRoom'),
+                    data: roomName
+                });
+                return;
+            }
             client.join(roomName);
             this.personsByName[personName] = roomName;
             this.personsById[client.id] = roomName;
@@ -36,10 +47,15 @@ class Main {
         }
         console.log('room ' + roomName + ' has been created.');
         let broadcastRoom = setInterval(function () {
+            let room = this.rooms[roomName];
+            if (!room.triggerBroadcast) {
+                return;
+            }
             this.io.to(roomName).emit('roomReply', {
-                people: this.rooms[roomName].getPeople(),
-                messages: this.rooms[roomName].messages
+                people: room.getPeople(),
+                messages: room.messages
             });
+            room.triggerBroadcast = false;
         }.bind(this), 500);
         this.rooms[roomName] = new Room_1.default(roomName, broadcastRoom);
         this.joinRoom(personName, roomName, client);

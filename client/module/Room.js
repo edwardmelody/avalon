@@ -9,12 +9,31 @@ class Room extends Component {
 			people: [],
 			messages: []
 		}
+		this.tempText = ''
 		this.onSubmitMessage = this.submitMessage.bind(this)
+		this.manLengthOfMessage = 10000
+		this.toggleScroll = false
 	}
 
 	componentWillMount() {
 		this.socket = this.props.location.state.socket
-		this.name = this.props.location.state.name
+		this.personName = this.props.location.state.personName
+		this.channelName = this.props.location.state.channelName
+	}
+
+	componentWillUpdate() {
+		let messageBox = $('.r-left-container')
+		if (messageBox.scrollTop() + messageBox.height() === messageBox.prop('scrollHeight')) {
+			this.toggleScroll = true
+		}
+	}
+
+	componentDidUpdate() {
+		let messageBox = $('.r-left-container')
+		if (this.toggleScroll) {
+			messageBox[0].scrollTo(0, messageBox.prop('scrollHeight'))
+		}
+		this.toggleScroll = false
 	}
 
 	componentDidMount() {
@@ -33,16 +52,38 @@ class Room extends Component {
 		$('.r-textarea').focus()
 	}
 
+	componentWillUnmount() {
+		this.socket.emit('leaveRoom', null)
+	}
+
 	submitMessage(e) {
 		let text = e.target.innerHTML
-		if (text.length > 1000) {
-			e.preventDefault()
-			return false
+		if (text.length > this.manLengthOfMessage) {
+			e.target.innerHTML = this.tempText
+			let range, selection;
+			if (document.createRange)//Firefox, Chrome, Opera, Safari, IE 9+
+			{
+				range = document.createRange();//Create a range (a range is a like the selection but invisible)
+				range.selectNodeContents(e.target);//Select the entire contents of the element with the range
+				range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+				selection = window.getSelection();//get the selection object (allows you to change selection)
+				selection.removeAllRanges();//remove any selections already made
+				selection.addRange(range);//make the range you have just created the visible selection
+			}
+			else if (document.selection)//IE 8 and lower
+			{
+				range = document.body.createTextRange();//Create a range (a range is a like the selection but invisible)
+				range.moveToElementText(e.target);//Select the entire contents of the element with the range
+				range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+				range.select();//Select the range (make it the visible selection
+			}
+			return true
 		}
+		this.tempText = text
 		let code = e.keyCode
 		if (code === 13 && !e.shiftKey) { // enter
 			this.socket.emit('message', {
-				name: this.name,
+				name: this.personName,
 				message: text
 			})
 			e.target.innerHTML = ''
@@ -60,7 +101,7 @@ class Room extends Component {
 						{
 							this.state.messages.map(function (obj, index) {
 								let className = 'r-friend-message-box'
-								if (this.name === obj.person._name) {
+								if (this.personName === obj.person._name) {
 									className = ' r-user-message-box'
 								}
 								return (
@@ -78,11 +119,12 @@ class Room extends Component {
 					</div>
 					<div className="r-right-container">
 						<div className="r-inner">
-							<ul className="collection">
+							<ul className="collection with-header">
+								<li className="collection-header"><h5>{this.channelName} ({this.state.people.length})</h5></li>
 								{
 									this.state.people.map(function (name) {
 										let className = 'collection-item'
-										if (name === this.name) {
+										if (name === this.personName) {
 											className += ' active'
 										}
 										return (
@@ -96,9 +138,7 @@ class Room extends Component {
 				</div>
 				<div className="r-bottom-container red darken-2">
 					<div className="r-chat-box-container">
-						<div className="r-chat-box">
-							<div className="r-textarea" contentEditable="true" placeholder="typing your mind" onKeyDown={(e) => this.onSubmitMessage(e)}></div>
-						</div>
+						<div className="r-textarea" contentEditable="true" placeholder="typing your mind" onKeyDown={(e) => this.onSubmitMessage(e)}></div>
 					</div>
 				</div>
 			</div>

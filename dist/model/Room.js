@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Room {
     constructor(name, broadcastRoom) {
+        this._triggerBroadcast = true;
         this._name = name;
         this._broadcastRoom = broadcastRoom;
         this._personByName = {};
@@ -20,6 +21,7 @@ class Room {
             if (this._messages.length > this.MAX_MESSAGE_LENGTH) {
                 this._messages.pop();
             }
+            this._triggerBroadcast = true;
         }.bind(this));
     }
     get name() {
@@ -31,14 +33,22 @@ class Room {
     get broadcastRoom() {
         return this._broadcastRoom;
     }
+    set triggerBroadcast(triggerBroadcast) {
+        this._triggerBroadcast = triggerBroadcast;
+    }
+    get triggerBroadcast() {
+        return this._triggerBroadcast;
+    }
     addPerson(client, person) {
         this._personById[person.id] = person;
         this._personByName[person.name] = person;
         this.addMessage(client);
+        this._triggerBroadcast = true;
     }
     removePerson(person) {
         delete this._personById[person.id];
         delete this._personByName[person.name];
+        this._triggerBroadcast = true;
     }
     getPersonByName(name) {
         return this._personByName[name];

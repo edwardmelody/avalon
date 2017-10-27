@@ -9,6 +9,7 @@ class Room {
 	private _personById: { [key: string]: Person }
 	private _broadcastRoom: number
 	private _messages: Array<{ person: Person, message: string }>
+	private _triggerBroadcast = true
 
 
 	constructor(name: string, broadcastRoom: number) {
@@ -31,6 +32,7 @@ class Room {
 			if (this._messages.length > this.MAX_MESSAGE_LENGTH) {
 				this._messages.pop()
 			}
+			this._triggerBroadcast = true
 		}.bind(this))
 	}
 
@@ -46,15 +48,25 @@ class Room {
 		return this._broadcastRoom
 	}
 
+	set triggerBroadcast(triggerBroadcast: boolean) {
+		this._triggerBroadcast = triggerBroadcast
+	}
+
+	get triggerBroadcast(): boolean {
+		return this._triggerBroadcast
+	}
+
 	addPerson(client: any, person: Person): void {
 		this._personById[person.id] = person
 		this._personByName[person.name] = person
 		this.addMessage(client)
+		this._triggerBroadcast = true
 	}
 
 	removePerson(person: Person): void {
 		delete this._personById[person.id]
 		delete this._personByName[person.name]
+		this._triggerBroadcast = true
 	}
 
 	getPersonByName(name: string): Person {

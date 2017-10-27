@@ -44,7 +44,13 @@ class Home extends Component {
 		})
 
 		this.socket.on('home-reply', function (obj) {
-			if (!obj || !obj.result) {
+			if (!obj) {
+				return
+			}
+			if (!obj.result) {
+				if (obj.message) {
+					Materialize.toast(obj.message, 4000)
+				}
 				return
 			}
 			let key = obj.key
@@ -53,7 +59,8 @@ class Home extends Component {
 					pathname: '/room/' + obj.data,
 					state: {
 						socket: this.socket,
-						name: this.name
+						personName: this.name,
+						channelName: this.channelName
 					}
 				})
 			}
@@ -116,6 +123,7 @@ class Home extends Component {
 		let channelName = null
 		if (typeof (data) === 'string') {
 			channelName = data
+			this.channelName = channelName
 		} else {
 			if (!this.validateChannelName()) {
 				return

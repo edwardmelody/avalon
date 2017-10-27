@@ -1,6 +1,8 @@
 import Room from './model/Room'
 import Person from './model/Person'
 
+import Lang from './lang/LangManager'
+
 class Main {
 	public io: any
 	public rooms: { [key: string]: Room }
@@ -28,6 +30,16 @@ class Main {
 	joinRoom(personName: string, roomName: string, client: any) {
 		let room = this.rooms[roomName]
 		if (room) {
+			let person = room.getPersonByName(personName)
+			if (person) {
+				client.emit('home-reply', {
+					key: 'joinRoom',
+					result: false,
+					message: Lang.get('message', 'duplicateNameWhenJoinRoom'),
+					data: roomName
+				})
+				return
+			}
 			client.join(roomName)
 			this.personsByName[personName] = roomName
 			this.personsById[client.id] = roomName
@@ -42,10 +54,15 @@ class Main {
 		}
 		console.log('room ' + roomName + ' has been created.')
 		let broadcastRoom = setInterval(function () {
+			let room = this.rooms[roomName]
+			if (!room.triggerBroadcast) {
+				return
+			}
 			this.io.to(roomName).emit('roomReply', {
-				people: this.rooms[roomName].getPeople(),
-				messages: this.rooms[roomName].messages
+				people: room.getPeople(),
+				messages: room.messages
 			})
+			room.triggerBroadcast = false
 		}.bind(this), 500)
 		this.rooms[roomName] = new Room(roomName, broadcastRoom)
 		this.joinRoom(personName, roomName, client)
